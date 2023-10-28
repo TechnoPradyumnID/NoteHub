@@ -1,13 +1,13 @@
 package com.technopradyumn.notehub
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     private lateinit var notesRV: RecyclerView
     private lateinit var addFAB: FloatingActionButton
     private lateinit var adapter: NoteRVAdapter
-    private lateinit var noteViewModel: NoteViewModal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,24 +32,27 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         notesRV = findViewById(R.id.notesRV)
         addFAB = findViewById(R.id.idFAB)
 
-//        notesRV.layoutManager = LinearLayoutManager(this)
+        notesRV.layoutManager = LinearLayoutManager(this)
 
-        val numberOfColumns = 2
-        notesRV.setLayoutManager(GridLayoutManager(this, numberOfColumns))
+//        val numberOfColumns = 2
+//        notesRV.setLayoutManager(GridLayoutManager(this, numberOfColumns))
 
         adapter = NoteRVAdapter(this, this, this)
         notesRV.adapter = adapter
 
+
+        adapter.attachSwipeToDeleteCallback(notesRV)
+
         viewModal = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(NoteViewModal::class.java)
+        )[NoteViewModal::class.java]
 
-        viewModal.allNotes.observe(this, Observer { list ->
+        viewModal.allNotes.observe(this) { list ->
             list?.let {
                 adapter.updateList(it)
             }
-        })
+        }
 
         addFAB.setOnClickListener {
             val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
@@ -58,28 +60,25 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
             this.finish()
         }
 
-        noteViewModel = ViewModelProvider(
+        viewModal = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(NoteViewModal::class.java)
+        )[NoteViewModal::class.java]
 
-        val searchView: SearchView = findViewById(R.id.search_bar)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        val searchView: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { adapter.filterList(it) }
+                adapter.filterList((newText ?: ""))
+
                 return true
             }
         })
 
-        noteViewModel.allNotes.observe(this) { notes ->
-            notes?.let {
-                adapter.updateList(it)
-            }
-        }
     }
 
     override fun onNoteClick(note: Note) {

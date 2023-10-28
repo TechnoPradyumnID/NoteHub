@@ -27,7 +27,7 @@ class AddEditNoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_edit_note)
 
         val currentDate = Date()
-        val dateFormat = SimpleDateFormat("dd MMM, yyyy - HH:mm")
+        val dateFormat = SimpleDateFormat("dd MMM, yyyy - HH:mm:ss")
         val currentDateTime = dateFormat.format(currentDate)
 
         val dateTime = findViewById<TextView>(R.id.textView)
@@ -70,7 +70,7 @@ class AddEditNoteActivity : AppCompatActivity() {
             } else {
                 if (noteType.equals("Edit")) {
                     if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
-                        val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
+                        val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm:ss")
                         val currentDateAndTime: String = sdf.format(Date())
                         val updatedNote = Note(noteTitle, noteDescription, currentDateAndTime)
                         updatedNote.id = noteID
@@ -79,7 +79,7 @@ class AddEditNoteActivity : AppCompatActivity() {
                     }
                 } else {
                     if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
-                        val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
+                        val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm:ss")
                         val currentDateAndTime: String = sdf.format(Date())
 
                         viewModal.addNote(Note(noteTitle, noteDescription, currentDateAndTime))

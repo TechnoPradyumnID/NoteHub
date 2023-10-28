@@ -1,28 +1,31 @@
 package com.technopradyumn.notehub.adapter
 
+import FilterNote
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.technopradyumn.notehub.Models.Note
 import com.technopradyumn.notehub.R
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.Locale
 import kotlin.random.Random
 
 class NoteRVAdapter(
     val context: Context,
     val noteClickDeleteInterface: NoteClickDeleteInterface,
-    val noteClickInterface: NoteClickInterface
+    private val noteClickInterface: NoteClickInterface
 ) :
-    RecyclerView.Adapter<NoteRVAdapter.ViewHolder>() {
+    RecyclerView.Adapter<NoteRVAdapter.ViewHolder>(),Filterable{
 
     private val allNotes = ArrayList<Note>()
-    private val filteredNotes = ArrayList<Note>()
+    private var filteredNotes = ArrayList<Note>()
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteItem = itemView.findViewById<CardView>(R.id.noteItem)
@@ -40,20 +43,21 @@ class NoteRVAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.noteTV.setText(allNotes.get(position).noteTitle)
-        holder.dateTV.setText("Last Updated : " + allNotes.get(position).timeStamp)
+
+        holder.noteTV.text = allNotes[position].noteTitle
+        holder.dateTV.text = "Last Updated: " + allNotes[position].timeStamp
+
         holder.deleteIV.setOnClickListener {
             noteClickDeleteInterface.onDeleteIconClick(allNotes[position])
         }
 
         holder.itemView.setOnClickListener {
-            noteClickInterface.onNoteClick(allNotes.get(position))
+            noteClickInterface.onNoteClick(allNotes[position])
         }
 
         holder.noteItem.setCardBackgroundColor(
             holder.itemView.resources.getColor(randomColor(), null)
         )
-
     }
 
     override fun getItemCount(): Int {
@@ -70,64 +74,69 @@ class NoteRVAdapter(
     fun filterList(search: String) {
         filteredNotes.clear()
 
-        if (search.isEmpty()) {
-            filteredNotes.addAll(allNotes.sortedByDescending { it.timeStamp })
-        } else {
+        if (search.isNotEmpty()) {
             val filtered = allNotes.filter { note ->
-                note.noteTitle.contains(search, true) || note.noteDescription.contains(search, true)
-            }.sortedByDescending { it.timeStamp }
-
-            val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
-            val currentDateAndTime: String = sdf.format(Date())
-
-            val updatedFilteredNotes = filtered.map { note ->
-                Note(note.noteTitle, note.noteDescription, currentDateAndTime)
+                note.noteTitle.contains(search, true)
             }
-
-            filteredNotes.addAll(updatedFilteredNotes)
+            filteredNotes.addAll(filtered.sortedBy { it.noteTitle })
+        } else {
+            filteredNotes.addAll(allNotes.sortedBy { it.timeStamp })
         }
 
         notifyDataSetChanged()
     }
 
 
+    fun attachSwipeToDeleteCallback(recyclerView: RecyclerView) {
+        val swipeToDeleteCallback = object : SwipeToDeleteCallback(context) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
 
+                // Ensure that the position is within a valid range
+                if (position in 0 until allNotes.size) {
+                    val deletedNote = allNotes[position]
+                    noteClickDeleteInterface.onDeleteIconClick(deletedNote)
+                    removeNoteAtPosition(position, recyclerView)
+                }
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+
+    fun removeNoteAtPosition(position: Int, recyclerView: RecyclerView) {
+        if (position >= 0 && position < allNotes.size) {
+            val deletedNote = allNotes[position]
+            allNotes.removeAt(position)
+            notifyItemRemoved(position)
+            allNotes.add(position, deletedNote)
+        }
+    }
 
     fun randomColor(): Int {
-
-        val list = ArrayList<Int>()
-        list.add(R.color.darkPurple)
-        list.add(R.color.lightPurple)
-
         val colorList = mutableListOf(
-            R.color.background1,
-            R.color.background2,
-            R.color.background3,
-            R.color.background4,
-            R.color.background5,
-            R.color.background6,
-            R.color.background7,
-            R.color.background8,
-            R.color.background9,
-            R.color.background10,
-            R.color.background11,
-            R.color.background12,
-            R.color.background13,
-            R.color.background14,
-            R.color.background15,
-            R.color.background16,
-            R.color.background17,
-            R.color.background18,
-            R.color.background19,
+            R.color.background1, R.color.background2, R.color.background3,
+            R.color.background4, R.color.background5, R.color.background6, R.color.background7,
+            R.color.background8, R.color.background9, R.color.background10, R.color.background11,
+            R.color.background12, R.color.background13, R.color.background14, R.color.background15,
+            R.color.background16, R.color.background17, R.color.background18, R.color.background19,
             R.color.background20
         )
-
 
         val seed = System.currentTimeMillis().toInt()
         val randomIndex = Random(seed).nextInt(colorList.size)
         return colorList[randomIndex]
     }
 
+    private val filter: FilterNote? = null
+    override fun getFilter(): Filter {
+        if (filter == null){
+            return FilterNote(this,allNotes)
+        }
+        return filter as FilterNote
+    }
 }
 
 interface NoteClickDeleteInterface {
