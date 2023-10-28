@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="darkPurple">#FF845EC2</color>
+    <color name="lightPurple">#FFF3C5FF</color>
+
+    <color name="background1">#FFF8F8F8</color>
+    <color name="background2">#FFFAE8E0</color>
+    <color name="background3">#FFF2F2F2</color>
+    <color name="background4">#FFF4D03F</color>
+    <color name="background5">#FFD5DBDB</color>
+    <color name="background6">#FFF0E68C</color>
+    <color name="background7">#FFD6DBDF</color>
+    <color name="background8">#FFFFDDC1</color>
+    <color name="background9">#FFD2B4DE</color>
+    <color name="background10">#FFA2D9CE</color>
+    <color name="background11">#FFFDEBD0</color>
+    <color name="background12">#FFE6B0AA</color>
+    <color name="background13">#FFD7BDE2</color>
+    <color name="background14">#FFA9DFBF</color>
+    <color name="background15">#FFABEBC6</color>
+    <color name="background16">#FFEDBB99</color>
+    <color name="background17">#FFA3E4D7</color>
+    <color name="background18">#FFFAD02E</color>
+    <color name="background19">#FFA2D9CE</color>
+    <color name="background20">#FFE59866</color>
+</resources>
