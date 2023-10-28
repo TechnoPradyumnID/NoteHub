@@ -2,12 +2,12 @@ package com.technopradyumn.notehub
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -16,6 +16,7 @@ import com.technopradyumn.notehub.Models.NoteViewModal
 import com.technopradyumn.notehub.adapter.NoteClickDeleteInterface
 import com.technopradyumn.notehub.adapter.NoteClickInterface
 import com.technopradyumn.notehub.adapter.NoteRVAdapter
+
 
 class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInterface {
 
@@ -32,7 +33,10 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         notesRV = findViewById(R.id.notesRV)
         addFAB = findViewById(R.id.idFAB)
 
-        notesRV.layoutManager = LinearLayoutManager(this)
+//        notesRV.layoutManager = LinearLayoutManager(this)
+
+        val numberOfColumns = 2
+        notesRV.setLayoutManager(GridLayoutManager(this, numberOfColumns))
 
         adapter = NoteRVAdapter(this, this, this)
         notesRV.adapter = adapter

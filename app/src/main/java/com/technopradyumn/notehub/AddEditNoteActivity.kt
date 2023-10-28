@@ -2,16 +2,16 @@ package com.technopradyumn.notehub
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.technopradyumn.notehub.Models.Note
 import com.technopradyumn.notehub.Models.NoteViewModal
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class AddEditNoteActivity : AppCompatActivity() {
 
@@ -25,6 +25,14 @@ class AddEditNoteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_note)
+
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("dd MMM, yyyy - HH:mm")
+        val currentDateTime = dateFormat.format(currentDate)
+
+        val dateTime = findViewById<TextView>(R.id.textView)
+
+        dateTime.text = currentDateTime
 
         viewModal = ViewModelProvider(
             this,
@@ -55,26 +63,32 @@ class AddEditNoteActivity : AppCompatActivity() {
             val noteTitle = noteTitleEdt.text.toString()
             val noteDescription = noteEdt.text.toString()
 
-            if (noteType.equals("Edit")) {
-                if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
-                    val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
-                    val currentDateAndTime: String = sdf.format(Date())
-                    val updatedNote = Note(noteTitle, noteDescription, currentDateAndTime)
-                    updatedNote.id = noteID
-                    viewModal.updateNote(updatedNote)
-                    Toast.makeText(this, "Note Updated..", Toast.LENGTH_LONG).show()
-                }
+            if (noteTitle.isEmpty() || noteDescription.isEmpty()) {
+                // Show a message if either the title or description is empty
+                Toast.makeText(this, "Please enter both title and description", Toast.LENGTH_SHORT)
+                    .show()
             } else {
-                if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
-                    val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
-                    val currentDateAndTime: String = sdf.format(Date())
+                if (noteType.equals("Edit")) {
+                    if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
+                        val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
+                        val currentDateAndTime: String = sdf.format(Date())
+                        val updatedNote = Note(noteTitle, noteDescription, currentDateAndTime)
+                        updatedNote.id = noteID
+                        viewModal.updateNote(updatedNote)
+                        Toast.makeText(this, "Note Updated..", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
+                        val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
+                        val currentDateAndTime: String = sdf.format(Date())
 
-                    viewModal.addNote(Note(noteTitle, noteDescription, currentDateAndTime))
-                    Toast.makeText(this, "$noteTitle Added", Toast.LENGTH_LONG).show()
+                        viewModal.addNote(Note(noteTitle, noteDescription, currentDateAndTime))
+                        Toast.makeText(this, "$noteTitle Added", Toast.LENGTH_LONG).show()
+                    }
                 }
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
             }
-            startActivity(Intent(applicationContext, MainActivity::class.java))
-            finish()
         }
     }
 }

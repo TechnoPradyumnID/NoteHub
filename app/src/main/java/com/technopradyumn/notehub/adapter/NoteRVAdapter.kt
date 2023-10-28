@@ -10,6 +10,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.technopradyumn.notehub.Models.Note
 import com.technopradyumn.notehub.R
+import java.text.SimpleDateFormat
+import java.util.Date
 import kotlin.random.Random
 
 class NoteRVAdapter(
@@ -71,13 +73,23 @@ class NoteRVAdapter(
         if (search.isEmpty()) {
             filteredNotes.addAll(allNotes.sortedByDescending { it.timeStamp })
         } else {
-            filteredNotes.addAll(allNotes.filter { note ->
+            val filtered = allNotes.filter { note ->
                 note.noteTitle.contains(search, true) || note.noteDescription.contains(search, true)
-            }.sortedByDescending { it.timeStamp })
+            }.sortedByDescending { it.timeStamp }
+
+            val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
+            val currentDateAndTime: String = sdf.format(Date())
+
+            val updatedFilteredNotes = filtered.map { note ->
+                Note(note.noteTitle, note.noteDescription, currentDateAndTime)
+            }
+
+            filteredNotes.addAll(updatedFilteredNotes)
         }
 
         notifyDataSetChanged()
     }
+
 
 
 

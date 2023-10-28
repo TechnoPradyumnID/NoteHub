@@ -55,6 +55,16 @@
         app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Date and Time"
+        android:paddingStart="10dp"
+        app:layout_constraintStart_toStartOf="@+id/idEdtNoteName"
+        app:layout_constraintTop_toBottomOf="@+id/idEdtNoteName" />
+
     <EditText
         android:id="@+id/idEdtNoteDesc"
         android:layout_width="0dp"
@@ -70,6 +80,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/idEdtNoteName"
         app:layout_constraintStart_toStartOf="@+id/idEdtNoteName"
-        app:layout_constraintTop_toBottomOf="@+id/idEdtNoteName" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
