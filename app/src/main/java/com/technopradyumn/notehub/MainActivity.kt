@@ -65,9 +65,8 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         )[NoteViewModal::class.java]
 
-        val searchView: androidx.appcompat.widget.SearchView = findViewById(R.id.search_bar)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        val searchView: SearchView = findViewById(R.id.search_bar)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
