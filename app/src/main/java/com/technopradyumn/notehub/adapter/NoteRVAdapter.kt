@@ -10,18 +10,14 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.technopradyumn.notehub.Models.Note
 import com.technopradyumn.notehub.R
-import java.util.Locale
 import kotlin.random.Random
 
-class NoteRVAdapter(
-    val context: Context,
-    val noteClickDeleteInterface: NoteClickDeleteInterface,
-    private val noteClickInterface: NoteClickInterface
-) :
+class NoteRVAdapter(recyclerView: RecyclerView, val context: Context, val noteClickDeleteInterface: NoteClickDeleteInterface, private val noteClickInterface: NoteClickInterface) :
     RecyclerView.Adapter<NoteRVAdapter.ViewHolder>(),Filterable{
 
     private val allNotes = ArrayList<Note>()
@@ -41,6 +37,7 @@ class NoteRVAdapter(
         )
         return ViewHolder(itemView)
     }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
@@ -125,10 +122,43 @@ class NoteRVAdapter(
             R.color.background20
         )
 
-        val seed = System.currentTimeMillis().toInt()
-        val randomIndex = Random(seed).nextInt(colorList.size)
-        return colorList[randomIndex]
+        if (colorList.isNotEmpty()) {
+            val randomIndex = Random.nextInt(colorList.size)
+            return colorList[randomIndex]
+        } else {
+            // If the color list is empty, add all of the colors back in and then get a random color.
+            colorList.addAll(
+                listOf(
+                    R.color.background1,
+                    R.color.background2,
+                    R.color.background3,
+                    R.color.background4,
+                    R.color.background5,
+                    R.color.background6,
+                    R.color.background7,
+                    R.color.background8,
+                    R.color.background9,
+                    R.color.background10,
+                    R.color.background11,
+                    R.color.background12,
+                    R.color.background13,
+                    R.color.background14,
+                    R.color.background15,
+                    R.color.background16,
+                    R.color.background17,
+                    R.color.background18,
+                    R.color.background19,
+                    R.color.background20
+                )
+            )
+
+            val randomIndex = Random.nextInt(colorList.size)
+            return colorList[randomIndex]
+        }
     }
+
+
+
 
     private val filter: FilterNote? = null
     override fun getFilter(): Filter {
@@ -137,6 +167,9 @@ class NoteRVAdapter(
         }
         return filter as FilterNote
     }
+
+
+
 }
 
 interface NoteClickDeleteInterface {

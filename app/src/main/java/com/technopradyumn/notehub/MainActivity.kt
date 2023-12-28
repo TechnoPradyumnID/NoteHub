@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     private lateinit var notesRV: RecyclerView
     private lateinit var addFAB: FloatingActionButton
     private lateinit var adapter: NoteRVAdapter
+    lateinit var itemAnimator: RecyclerView.ItemAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
 //        val numberOfColumns = 2
 //        notesRV.setLayoutManager(GridLayoutManager(this, numberOfColumns))
 
-        adapter = NoteRVAdapter(this, this, this)
+        adapter = NoteRVAdapter(notesRV,this, this, this)
         notesRV.adapter = adapter
 
 
@@ -78,6 +80,16 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
             }
         })
 
+
+//        notesRV.itemAnimator = DefaultItemAnimator()
+//
+//        val animRes = resources.getIdentifier("item_animation", "anim", packageName)
+//
+//        itemAnimator = DefaultItemAnimator()
+//        itemAnimator.setAddAnimation(animRes)
+//        itemAnimator.setRemoveAnimation(animRes)
+//
+//        notesRV.itemAnimator = itemAnimator
     }
 
     override fun onNoteClick(note: Note) {
